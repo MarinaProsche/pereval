@@ -1,4 +1,5 @@
 from django.db import models
+import os
 
 from django.contrib.auth.models import AbstractUser
 
@@ -7,6 +8,22 @@ STATUS_CHOICES = [
     ("pending", "модератор взял в работу"),
     ("accepted", "модерация прошла успешно"),
     ("rejected", "модерация прошла, информация не принята"),
+]
+
+WEATHER_CHOICES = [
+    ('winter', 'зима'),
+     ('spring', 'весна'),
+     ('summer', 'лето'),
+     ('autumn', 'осень')
+]
+
+LEVEL_CHOICES = [
+    ('1A', '1A'),
+    ('1Б', '1Б'),
+    ('2А', '2А'),
+    ('2Б', '2Б'),
+    ('3А', '3А'),
+    ('3Б', '3Б')
 ]
 
 class User(AbstractUser):
@@ -25,6 +42,11 @@ class User(AbstractUser):
     class Meta:
         db_table = 'auth_user'
 
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.username = self.email
+        super(User, self).save(*args, **kwargs)
+
 class Coords(models.Model):
     latitude = models.FloatField()
     longitude = models.FloatField()
@@ -36,23 +58,12 @@ class Pereval(models.Model):
     other_titles = models.CharField(max_length=255)
     connects = models.CharField(verbose_name='pass connects', max_length=255)
     coords = models.ForeignKey(Coords, null=True, on_delete=models.CASCADE)
-
-    level_winter = models.CharField(max_length=255, null = True, blank = True)
-    level_summer = models.CharField(max_length=255, null = True, blank = True)
-    level_autumn = models.CharField(max_length=255, null = True, blank = True)
-    level_spring = models.CharField(max_length=255, null = True, blank = True)
-
-    latitude = models.FloatField()
-    longitude = models.FloatField()
-    height = models.IntegerField()
-
+    weather = models.CharField(max_length=10, choices=WEATHER_CHOICES, null = True, blank = True)
+    level = models.CharField(max_length=2, choices=LEVEL_CHOICES, null = True, blank = True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="new")
-    add_time = models.DateField(auto_now_add=True)
+    add_time = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-class PerevalAreas(models.Model):
-    pereval = models.ForeignKey(Pereval, on_delete=models.CASCADE, related_name="areas")
-    title = models.TextField()
 
 def pereval_directory_path(instance, filename):
     return os.path.join(f'pereval_{instance.pereval.id}', filename)
