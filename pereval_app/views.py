@@ -5,6 +5,8 @@ from rest_framework.views import exception_handler
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
+from rest_framework.parsers import MultiPartParser, FormParser
+
 
 # from .exceptions import DBConnectException, ObjectStatusException
 from .serializers import *
@@ -12,6 +14,8 @@ from .serializers import *
 
 class PerevalViewSet(viewsets.ModelViewSet):
     serializer_class = PerevalSerializer
+    parser_classes = (MultiPartParser, FormParser)
+
     def get_queryset(self):
         user_email = self.request.query_params.get('user_email')
         if user_email:
@@ -24,11 +28,13 @@ class PerevalViewSet(viewsets.ModelViewSet):
                 queryset = Pereval.objects.all()
         return queryset
 
+
     def create(self, request, *args, **kwargs):
         serializer=PerevalSerializer(data=request.data)
         serializer.is_valid(raise_exception = True)
         serializer.save()
         return Response({'post':'serialaizer.data'})
+
 
     def retrieve(self, request, *args, **kwargs):
         try:
@@ -38,18 +44,20 @@ class PerevalViewSet(viewsets.ModelViewSet):
         except OperationalError:
             raise Exception()
 
+
     def partial_update(self, request, *args, **kwargs):
         try:
             queryset = Pereval.objects.filter(id=kwargs['pk'])
             if not queryset.exists():
-                raise NotFound
+                return Response({"error": "Такого объекта не существует"}, status=400)
             query_object = queryset.first()
             if not query_object.status == 'new':
-                raise ObjectStatusException
+                return Response({"message": "Перевал на модерации, вы не можете его изменить",
+                                 "state": 0}, status=400)
             response = super().partial_update(request, *args, **kwargs)
             response.data = {
-                'status': response.status_code,
-                'message': response.status_text,
+                'status': "200",
+                'message': 'Запись обновлена',
                 'state': 1,
             }
             return response

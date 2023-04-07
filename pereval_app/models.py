@@ -72,7 +72,7 @@ class Images(models.Model):
     pereval = models.ForeignKey(Pereval, on_delete=models.CASCADE, related_name="photos")
     title = models.CharField(max_length=255)
     date_added = models.DateField(auto_now_add=True)
-    img = models.ImageField(upload_to=pereval_directory_path)
+    img = models.ImageField(null=True, blank = True, upload_to=pereval_directory_path)
 
     def __str__(self):
         return f"id: {self.pk}, title:{self.title}"

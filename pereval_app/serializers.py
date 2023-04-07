@@ -3,7 +3,7 @@ from rest_framework import serializers
 from django.db.utils import OperationalError
 import datetime
 from django.forms import model_to_dict
-
+from drf_extra_fields.fields import Base64ImageField
 
 
 def file_size(value):  # add this to some file where you can import it from
@@ -27,7 +27,11 @@ class CoordSerializer(serializers.ModelSerializer):
         fields = ['latitude', 'longitude', 'height']
 
 class ImagesSerializer(serializers.ModelSerializer):
-    img = serializers.ImageField(max_length=None, use_url=True, validators=[file_size])
+
+    img = serializers.ImageField(required=False
+                                 # use_url = True,
+                           # validators=[file_size]
+    )
     class Meta:
         model = Images
         fields = ['title', 'img', 'date_added', 'pereval']
@@ -47,7 +51,6 @@ class ImagesSerializer(serializers.ModelSerializer):
         return pereval
 
 class PerevalSerializer(serializers.ModelSerializer):
-    # connects = serializers.CharField(source='connects', label='Connects', allow_blank=True)
     coords = CoordSerializer()
     user = UserSerializer()
     images = ImagesSerializer(source = 'photos', many=True)
@@ -67,16 +70,18 @@ class PerevalSerializer(serializers.ModelSerializer):
                  'images'
                   ]
         read_only_fields = [
-           'id',
-           'add_time',
+            'id',
+            'add_time',
+            'status'
         ]
+        depth = 1
 
     def create(self, validated_data):
         coords = validated_data.pop('coords')
         user = validated_data.pop('user')
-        weather = validated_data.pop('weather')
-        levels = validated_data.pop('level')
-        images = validated_data.pop('images')
+        # weather = validated_data.pop('weather')
+        # levels = validated_data.pop('level')
+        # images = validated_data.pop('images')
         try:
             user_instance = User.objects.filter(email=user['email']).first()
             if not user_instance:
@@ -96,7 +101,7 @@ class PerevalSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         coords = validated_data.pop('coords', None)
         user = validated_data.pop('user', None)
-        images = validated_data.pop('pereval_images', None)
+        images = validated_data.pop('photos', None)
         try:
             # in case when user should be modifiable or replaceable
             # if user:
@@ -112,10 +117,10 @@ class PerevalSerializer(serializers.ModelSerializer):
                 coords_unit.pop('id', None)
                 coords_instance, created = Coords.objects.get_or_create(**coords_unit)
                 instance.coords = coords_instance
-            # if images:
-            #     Image.objects.filter(mpass=instance).delete()
-            #     for image in images:
-            #         Image.objects.create(mpass=instance, **image)
+            if images:
+                Images.objects.filter(pereval=instance).delete()
+                for image in images:
+                    Images.objects.create(pereval=instance, **image)
             return super().update(instance, validated_data)
         except OperationalError:
             raise DBConnectException()

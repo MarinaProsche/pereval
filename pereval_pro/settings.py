@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-)vomba-*k6o@$ql(b4538qlnyxjdc3z75$5w1i+n=gc=8!+m9k
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
+SITE_ID = 1
 ALLOWED_HOSTS = []
 
 
@@ -38,7 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'pereval_app',
+    'ckeditor',
     'rest_framework',
+    'drf_extra_fields.fields',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -136,3 +139,10 @@ AUTH_USER_MODEL = 'pereval_app.User'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+CKEDITOR_UPLOAD_PATH = "uploads/"
+# REST_FRAMEWORK = {
+#     'DEFAULT_PERMISSION_CLASSES': (
+#         'rest_framework.permissions.IsAuthenticated',
+#     ),
+# }
