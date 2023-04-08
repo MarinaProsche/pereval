@@ -4,12 +4,8 @@ from django.db.utils import OperationalError
 import datetime
 from django.forms import model_to_dict
 from drf_extra_fields.fields import Base64ImageField
+from rest_framework.response import Response
 
-
-def file_size(value):  # add this to some file where you can import it from
-    limit = 2 * 1024 * 1024
-    if value.size > limit:
-        raise ValidationError('File too large. Size should not exceed 2 MiB.')
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,43 +13,27 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['name', 'surname', 'patronymic', 'phone', 'email']
 
         extra_kwargs = {
-            'email': {'validators': []}, #убираем валидацию мейла
+            'email': {'validators': []}, #убираем валидацию мейла, чтобы можно было редактировать записи
         }
 class CoordSerializer(serializers.ModelSerializer):
-    latitude = serializers.FloatField()
-    longitude = serializers.FloatField()
     class Meta:
         model = Coords
         fields = ['latitude', 'longitude', 'height']
 
 class ImagesSerializer(serializers.ModelSerializer):
 
-    img = serializers.ImageField(required=False
-                                 # use_url = True,
-                           # validators=[file_size]
-    )
     class Meta:
         model = Images
-        fields = ['title', 'img', 'date_added', 'pereval']
+        fields = ['title', 'img', 'date_added',]
         read_only_fields = [
             'id',
             'date_added',
         ]
 
-    def create(self, validated_data):
-        pereval = Pereval.objects.create(**validated_data)
-        coords_data = validated_data.pop('coords')
-        images_data = validated_data.pop('img')
-        Coords.objects.create(pereval=pereval, **coords_data)
-        for image_data in images_data:
-            image = Images.objects.create(**image_data)
-            Images.objects.create(foto=image, pereval=pereval)
-        return pereval
-
 class PerevalSerializer(serializers.ModelSerializer):
     coords = CoordSerializer()
     user = UserSerializer()
-    images = ImagesSerializer(source = 'photos', many=True)
+    photos = ImagesSerializer(many=True)
     class Meta:
         model = Pereval
         fields = ['id',
@@ -67,7 +47,7 @@ class PerevalSerializer(serializers.ModelSerializer):
                  'status',
                  'add_time',
                  'user',
-                 'images'
+                 'photos'
                   ]
         read_only_fields = [
             'id',
@@ -79,9 +59,7 @@ class PerevalSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         coords = validated_data.pop('coords')
         user = validated_data.pop('user')
-        # weather = validated_data.pop('weather')
-        # levels = validated_data.pop('level')
-        # images = validated_data.pop('images')
+        images = validated_data.pop('photos')
         try:
             user_instance = User.objects.filter(email=user['email']).first()
             if not user_instance:
@@ -90,8 +68,7 @@ class PerevalSerializer(serializers.ModelSerializer):
             pereval_instance = Pereval.objects.create(
                 user=user_instance,
                 coords=coords_instance,
-                **validated_data
-            )
+                **validated_data)
             for image in images:
                 Images.objects.create(pereval=pereval_instance, **image)
             return pereval_instance
@@ -103,14 +80,6 @@ class PerevalSerializer(serializers.ModelSerializer):
         user = validated_data.pop('user', None)
         images = validated_data.pop('photos', None)
         try:
-            # in case when user should be modifiable or replaceable
-            # if user:
-            #     email = user.get('email')
-            #     if email:
-            #         instance.user, created = MPassUser.objects.get_or_create(email=email)
-            #     else:
-            #         email = instance.user.email
-            #     MPassUser.objects.filter(email=email).update(**user)
             if coords:
                 coords_fields = model_to_dict(instance.coords)
                 coords_unit = {**coords_fields, **coords}

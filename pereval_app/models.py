@@ -57,12 +57,20 @@ class Pereval(models.Model):
     beautyTitle = models.CharField(max_length=255)
     other_titles = models.CharField(max_length=255)
     connects = models.CharField(verbose_name='pass connects', max_length=255)
-    coords = models.ForeignKey(Coords, null=True, on_delete=models.CASCADE)
-    weather = models.CharField(max_length=10, choices=WEATHER_CHOICES, null = True, blank = True)
+    coords = models.ForeignKey(Coords,
+                               null=True,
+                               on_delete=models.CASCADE,
+                               related_name = "coords_pereval"
+                               )
+    weather = models.CharField(max_length=10,
+                               choices=WEATHER_CHOICES,
+                               null = True,
+                               blank = True
+                               )
     level = models.CharField(max_length=2, choices=LEVEL_CHOICES, null = True, blank = True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="new")
     add_time = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_pereval")
 
 
 def pereval_directory_path(instance, filename):
