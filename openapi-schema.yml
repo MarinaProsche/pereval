@@ -1,4 +1,4 @@
-openapi: 4.18.2
+openapi: 3.0.2
 info:
   title: Rest API для сайта ФСТР (виртуальная стажировка)
   version: '1.0'
