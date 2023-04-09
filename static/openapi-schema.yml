@@ -5,12 +5,12 @@ info:
   version: '1.0'
   description: "Реализованы методы для добавления, просмотра и изменения пройденных перевалов"
 tags:
-  - name: "объекты"
+  - name: "objects"
 paths:
   /submitData:
     post:
       tags:
-      - "объекты"
+      - "objects"
       operationId: "create_pereval"
       description: "Добавить данные о прохождении нового перевала"
       requestBody:
@@ -41,7 +41,7 @@ paths:
   /submitData/:
     get:
       tags:
-      - "объекты"
+      - "objects"
       operationId: "filter_list_Pereval"
       description: "Получение списка всех перевалов пользователя с данным email"
       parameters:
@@ -69,7 +69,7 @@ paths:
   /submitData/{id}:
     get:
       tags:
-      - "объекты"
+      - "objects"
       operationId: "retrieve_Pereval"
       description: "Получить информацию по id объекта"
       parameters:
@@ -100,7 +100,7 @@ paths:
                 $ref: '#/components/schemas/ShortResponse'
     patch:
       tags:
-      - "объекты"
+      - "objects"
       operationId: "partial_update_Pereval"
       description: "Изменить данные выбранного по id объекта"
       parameters:
