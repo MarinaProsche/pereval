@@ -44,7 +44,7 @@ class PerevalViewSet(viewsets.ModelViewSet):
         try:
             queryset = Pereval.objects.filter(id=kwargs['pk'])
             if not queryset.exists():
-                return Response({"error": "Такого объекта не существует"}, status=400)
+                return Response({"error": "Такого объекта не существует"}, status=404)
             query_object = queryset.first()
             if not query_object.status == 'new':
                 return Response({"message": "Перевал на модерации, вы не можете его изменить",
@@ -52,8 +52,8 @@ class PerevalViewSet(viewsets.ModelViewSet):
             response = super().partial_update(request, *args, **kwargs)
             response.data = {
                 'status': "200",
-                'message': 'Запись обновлена',
                 'state': 1,
+                'message': 'Запись обновлена',
             }
             return response
         except OperationalError:

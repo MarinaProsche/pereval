@@ -16,10 +16,10 @@ urlpatterns = [
     path('submitData/<int:pk>', PerevalViewSet.as_view(
         {'get': 'retrieve', 'patch': 'partial_update',}),
          name='pereval-detail'),
-    # path('swagger-ui/', TemplateView.as_view(
-    #      template_name='swagger-ui.html',
-    #      extra_context={'schema_url':'openapi-schema'}), name='swagger-ui'),
-    # path('ckeditor/', include('ckeditor_uploader.urls')),
+    path('swagger-ui/', TemplateView.as_view(
+         template_name='swagger-ui.html',
+         extra_context={'schema_url':'openapi-schema'}), name='swagger-ui'),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
 ]
 
 if settings.DEBUG:
