@@ -1,5 +1,5 @@
 ---
-swagger: "2.0"
+openapi: "3.0.2"
 info:
   title: "Rest API FSTR"
   version: '1.0'
