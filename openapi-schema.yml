@@ -69,7 +69,7 @@ paths:
   /submitData/{id}:
     get:
       tags:
-      - "объекты"
+      - "objects"
       operationId: "retrieve_Pereval"
       description: "Получить информацию по id объекта"
       parameters:
@@ -100,7 +100,7 @@ paths:
                 $ref: '#/components/schemas/ShortResponse'
     patch:
       tags:
-      - "объекты"
+      - "objects"
       operationId: "partial_update_Pereval"
       description: "Изменить данные выбранного по id объекта"
       parameters:
