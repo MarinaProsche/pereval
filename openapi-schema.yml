@@ -5,14 +5,14 @@ info:
   version: '1.0'
   description: "Реализованы методы для добавления, просмотра и изменения пройденных перевалов"
 tags:
-  - name: объекты
+  - name: "объекты"
 paths:
   /submitData:
     post:
       tags:
-      - объекты
-      operationId: create_pereval
-      description: Добавить данные о прохождении нового перевала
+      - "объекты"
+      operationId: "create_pereval"
+      description: "Добавить данные о прохождении нового перевала"
       requestBody:
           content:
             application/json:
@@ -21,19 +21,19 @@ paths:
           required: true
       responses:
         '200':
-          description: Объект создан
+          description: "Объект создан"
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreationResponse'
         '400':
-          description: Ошибка при заполнении
+          description: "Ошибка при заполнении"
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreationResponse'
         '500':
-          description: Ошибка при обработке на сервере
+          description: "Ошибка при обработке на сервере"
           content:
             application/json:
               schema:
@@ -41,27 +41,27 @@ paths:
   /submitData/:
     get:
       tags:
-      - объекты
-      operationId: filter_list_Pereval
-      description: Получение списка всех перевалов пользователя с данным email
+      - "объекты"
+      operationId: "filter_list_Pereval"
+      description: "Получение списка всех перевалов пользователя с данным email"
       parameters:
-        - name: user_email
-          in: query
+        - name: "user_email"
+          in: "query"
           required: true
-          description: email пользователя
+          description: "email пользователя"
           schema:
-            type: string
+            type: "string"
       responses:
         '200':
-          description: Ответ получен
+          description: "Ответ получен"
           content:
             application/json:
               schema:
-                type: array
+                type: "array"
                 items:
                   $ref: '#/components/schemas/Pereval'
         '500':
-          description: Ошибка при обработке на сервере
+          description: "Ошибка при обработке на сервере"
           content:
             application/json:
               schema:
@@ -69,47 +69,47 @@ paths:
   /submitData/{id}:
     get:
       tags:
-      - объекты
-      operationId: retrieve_Pereval
-      description: Получить информацию по id объекта
+      - "объекты"
+      operationId: "retrieve_Pereval"
+      description: "Получить информацию по id объекта"
       parameters:
-        - name: id
-          in: path
+        - name: "id"
+          in: "path"
           required: true
-          description: Уникальный идентификатор перевала
+          description: "Уникальный идентификатор перевала"
           schema:
-            type: string
+            type: "string"
       responses:
         '200':
-          description: Объект получен
+          description: "Объект получен"
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Pereval'
         '404':
-          description: Такого объекта не существует
+          description: "Такого объекта не существует"
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ShortResponse'
         '500':
-          description: Ошибка при обработке на сервере
+          description: "Ошибка при обработке на сервере"
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ShortResponse'
     patch:
       tags:
-      - объекты
-      operationId: partial_update_Pereval
-      description: Изменить данные выбранного по id объекта
+      - "объекты"
+      operationId: "partial_update_Pereval"
+      description: "Изменить данные выбранного по id объекта"
       parameters:
-        - name: id
-          in: path
+        - name: "id"
+          in: "path"
           required: true
-          description: Уникальный идентификатор отчета
+          description: "Уникальный идентификатор отчета"
           schema:
-            type: string
+            type: "string"
       requestBody:
           content:
             application/json:
@@ -118,25 +118,25 @@ paths:
           required: true
       responses:
         '200':
-          description: Объект изменен
+          description: "Объект изменен"
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PatchSuccessResponse'
         '400':
-          description: Изменение невозможно
+          description: "Изменение невозможно"
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PatchFailResponse'
         '404':
-          description: Объект не найден
+          description: "Объект не найден"
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PatchFailResponse'
         '500':
-          description: Ошибка при обработке на сервере
+          description: "Ошибка при обработке на сервере"
           content:
             application/json:
               schema:
@@ -144,172 +144,172 @@ paths:
 components:
   schemas:
     CreationResponse:
-      type: object
+      type: "object"
       properties:
         message:
-          type: string
+          type: "string"
           description: "создан новый объект"
         id:
-          type: integer
+          type: "integer"
           nullable: true
-          description: Идентификатор созданного объекта или null
+          description: "Идентификатор созданного объекта или null"
         status:
-          type: integer
-          description: Код HTTP, полученный в результате обработки
+          type: "integer"
+          description: "Код HTTP, полученный в результате обработки"
     ShortResponse:
-      type: object
+      type: "object"
       properties:
         status:
-          type: integer
-          description: Код HTTP, полученный в результате обработки
+          type: "integer"
+          description: "Код HTTP, полученный в результате обработки"
         message:
-          type: string
-          description: Строка описания статуса
+          type: "string"
+          description: "Строка описания статуса"
     PatchSuccessResponse:
-      type: object
+      type: "object"
       properties:
         status:
-          type: integer
-          description: Код HTTP, полученный в результате обработки
+          type: "integer"
+          description: "Код HTTP, полученный в результате обработки"
         state:
-          type: integer
+          type: "integer"
           const: 1
-          description: Код состояния (1)
+          description: "Код состояния (1)"
         message:
-          type: string
+          type: "string"
           description: 'Запись обновлена'
     PatchFailResponse:
-      type: object
+      type: "object"
       properties:
         status:
-          type: integer
-          description: Код HTTP, полученный в результате обработки
+          type: "integer"
+          description: "Код HTTP, полученный в результате обработки"
         state:
-          type: integer
+          type: "integer"
           const: 0
-          description: Код состояния (0)
+          description: "Код состояния (0)"
         message:
-          type: string
-          description: Строка описания статуса
+          type: "string"
+          description: "Строка описания статуса"
     Pereval:
-      type: object
+      type: "object"
       properties:
         id:
-          type: integer
-          description: Уникальный идентификатор перевала в базе данных
+          type: "integer"
+          description: "Уникальный идентификатор перевала в базе данных"
           readOnly: true
         status:
-          type: string
-          description: Статус обработки перевала
+          type: "string"
+          description: "Статус обработки перевала"
           enum:
-            - new
-            - pending
-            - accepted
-            - rejected
+            - "new"
+            - "pending"
+            - "accepted"
+            - "rejected"
           readOnly: true
         beauty_title:
-          type: string
+          type: "string"
           maxLength: 30
-          description: Название горного объекта
+          description: "Название горного объекта"
         title:
-          type: string
+          type: "string"
           maxLength: 255
-          description: Наименование перевала
+          description: "Наименование перевала"
         other_titles:
           type: string
           maxLength: 255
-          description: Другие известные наименования перевала
+          description: "Другие известные наименования перевала"
         connects:
-          type: string
+          type: "string"
           maxLength: 255
-          description: Что соединяет перевал
+          description: "Что соединяет перевал"
         weather:
-          type: string
-          description: время года, в которое выполнен маршрут
+          type: "string"
+          description: "время года, в которое выполнен маршрут"
           enum:
-            - winter
-            - spring
-            - summer
-            - autumn
+            - "winter"
+            - "spring"
+            - "summer"
+            - "autumn"
         level:
-          type: string
-          description: уровень сложности маршрута
+          type: "string"
+          description: "уровень сложности маршрута"
           enum:
-            - 1А
-            - 1Б
-            - 2А
-            - 2Б
-            - 3А
-            - 3Б
+            - "1А"
+            - "1Б"
+            - "2А"
+            - "2Б"
+            - "3А"
+            - "3Б"
         add_time:
-          type: string
-          format: date-time
-          description: Дата и время добавления
+          type: "string"
+          format: "date-time"
+          description: "Дата и время добавления"
         coords:
-          type: object
+          type: "object"
           properties:
             latitude:
-              type: number
-              format: float
-              description: Географическая широта объекта
+              type: "number"
+              format: "float"
+              description: "Географическая широта объекта"
             longitude:
-              type: number
-              format: float
-              description: Географическая долгота объекта
+              type: "number"
+              format: "float"
+              description: "Географическая долгота объекта"
             height:
-              type: integer
-              description: Высота объекта
+              type: "integer"
+              description: "Высота объекта"
           required:
-            - latitude
-            - longitude
-            - height
+            - "latitude"
+            - "longitude"
+            - "height"
         user:
-          type: object
+          type: "object"
           properties:
             name:
-              type: string
+              type: "string"
               maxLength: 255
-              description: Имя пользователя
+              description: "Имя пользователя"
             surname:
-              type: string
+              type: "string"
               maxLength: 255
-              description: Фамилия пользователя
+              description: "Фамилия пользователя"
             patronymic:
-              type: string
+              type: "string"
               maxLength: 255
-              description: Отчество пользователя
+              description: "Отчество пользователя"
             email:
-              type: string
-              format: email
+              type: "string"
+              format: "email"
               maxLength: 255
-              description: Адрес e-mail пользователя
+              description: "Адрес e-mail пользователя"
             phone:
-              type: string
+              type: "string"
               maxLength: 20
-              description: Телефон пользователя
+              description: "Телефон пользователя"
           required:
-            - email
+            - "email"
         images:
-          type: array
-          description: Вложенные изображения
+          type: "array"
+          description: "Вложенные изображения"
           items:
-            type: object
+            type: "object"
             properties:
               title:
-                type: string
+                type: "string"
                 maxLength: 255
-                description: Название изображения
+                description: "Название изображения"
               date_added:
-                type: string
-                format: date-time
-                description: Дата добавления изображения
+                type: "string"
+                format: "date-time"
+                description: "Дата добавления изображения"
               img:
-                type: string
-                format: url
-                description: ссылка на загруженное изображение
+                type: "string"
+                format: "url"
+                description: "ссылка на загруженное изображение"
       required:
-      - beauty_title
-      - title
-      - add_time
-      - coords
-      - user
+      - "beauty_title"
+      - "title"
+      - "add_time"
+      - "coords"
+      - "user"
